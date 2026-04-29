@@ -159,6 +159,21 @@ export async function discoverPools({
 
   let rawPools = Array.isArray(data.data) ? data.data : [];
 
+  // ─── Client-side volatility filter ──────────────────────
+  const minVol = config.screening.minVolatility;
+  const maxVol = config.screening.maxVolatility;
+  if (minVol != null || maxVol != null) {
+    const before = rawPools.length;
+    rawPools = rawPools.filter((p) => {
+      const vol = Number(p.volatility);
+      if (!isFinite(vol)) return false; // skip pools without volatility data
+      if (minVol != null && vol < minVol) return false;
+      if (maxVol != null && vol > maxVol) return false;
+      return true;
+    });
+    log("screening", `Volatility filter: ${rawPools.length}/${before} pools passed (${minVol ?? "none"}–${maxVol ?? "none"})`);
+  }
+
   if (config.screening.useDiscordSignals) {
     const signalCandidates = await fetchDiscordSignalCandidates().catch((error) => {
       log("screening", `Discord signal fetch failed: ${error.message}`);

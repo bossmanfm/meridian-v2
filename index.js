@@ -578,7 +578,7 @@ ${candidateBlocks.join("\n\n")}
 STEPS:
 1. Pick the best candidate based on narrative quality, smart wallets, and pool metrics.
 2. Call deploy_position (active_bin is pre-fetched above — no need to call get_active_bin).
-   bins_below = round(35 + (volatility/5)*55) clamped to [35,90].
+   bins_below: use config value (${config.strategy.binsBelow}).
    For single-side SOL deploys, do not invent upside:
    set amount_y only, keep amount_x = 0, keep bins_above = 0, and let the upper bin stay at the active bin.
 3. Report in this exact format (no tables, no extra sections):
@@ -1209,7 +1209,7 @@ async function deployLatestCandidate(index) {
     throw new Error("Invalid candidate index. Run /screen first.");
   }
   const deployAmount = computeDeployAmount((await getWalletBalances()).sol);
-  const binsBelow = Math.max(35, Math.min(90, Math.round(35 + ((Number(candidate.volatility) || 0) / 5) * 55)));
+  const binsBelow = config.strategy.binsBelow;
   const result = await executeTool("deploy_position", {
     pool_address: candidate.pool,
     amount_y: deployAmount,

@@ -45,6 +45,8 @@ export const config = {
   screening: {
     excludeHighSupplyConcentration: u.excludeHighSupplyConcentration ?? true,
     minFeeActiveTvlRatio: u.minFeeActiveTvlRatio ?? 0.05,
+    minVolatility:        u.minVolatility        ?? null,
+    maxVolatility:        u.maxVolatility        ?? null,
     minTvl:            u.minTvl            ?? 10_000,
     maxTvl:            u.maxTvl !== undefined ? u.maxTvl : 150_000,
     minVolume:         u.minVolume         ?? 500,
@@ -241,6 +243,8 @@ export function reloadScreeningThresholds() {
     if (fresh.avoidPvpSymbols   !== undefined) s.avoidPvpSymbols = fresh.avoidPvpSymbols;
     if (fresh.blockPvpSymbols   !== undefined) s.blockPvpSymbols = fresh.blockPvpSymbols;
     if (fresh.maxBotHoldersPct  != null) s.maxBotHoldersPct = fresh.maxBotHoldersPct;
+    if (fresh.minVolatility     != null) s.minVolatility    = fresh.minVolatility;
+    if (fresh.maxVolatility     != null) s.maxVolatility    = fresh.maxVolatility;
     if (fresh.allowedLaunchpads !== undefined) s.allowedLaunchpads = fresh.allowedLaunchpads;
     if (fresh.blockedLaunchpads !== undefined) s.blockedLaunchpads = fresh.blockedLaunchpads;
   } catch { /* ignore */ }

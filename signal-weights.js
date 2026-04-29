@@ -26,7 +26,6 @@ const SIGNAL_NAMES = [
   "narrative_quality",
   "study_win_rate",
   "hive_consensus",
-  "volatility",
 ];
 
 const DEFAULT_WEIGHTS = Object.fromEntries(SIGNAL_NAMES.map((s) => [s, 1.0]));
