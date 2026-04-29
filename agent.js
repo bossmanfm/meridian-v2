@@ -142,6 +142,11 @@ function isToolChoiceRequiredError(error) {
   return /tool_choice/i.test(message) && /required/i.test(message);
 }
 
+function isReasonerToolChoiceError(error) {
+  const message = String(error?.message || error?.error?.message || error || "");
+  return /reasoner.*does not support.*tool_choice|tool_choice.*not supported.*reasoner/i.test(message);
+}
+
 /**
  * Core ReAct agent loop.
  *
@@ -216,6 +221,12 @@ export async function agentLoop(goal, maxSteps = config.llm.maxSteps, sessionHis
           if (toolChoice === "required" && isToolChoiceRequiredError(error)) {
             toolChoice = "auto";
             log("agent", "Provider rejected tool_choice=required — retrying with tool_choice=auto");
+            attempt -= 1;
+            continue;
+          }
+          if (isReasonerToolChoiceError(error)) {
+            toolChoice = "auto";
+            log("agent", "Reasoner model doesn't support tool_choice — retrying with tool_choice=auto");
             attempt -= 1;
             continue;
           }
